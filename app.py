@@ -48,20 +48,39 @@ def ingest_csv_data(qdrant_url, api_key, collection_name):
         for idx, vector, row in zip(range(len(vectors)), vectors, df.iterrows())
     ]
 )
+    
+    
 def semantic_search(query, qdrant_url, api_key, collection_name, top_k=5):
     # Initialize QdrantClient with your cloud URL and API key
-    client = QdrantClient(host=qdrant_url, api_key=api_key)
+    client = QdrantClient(url=qdrant_url, api_key=api_key)
 
     # Load pre-trained Sentence Transformer model
-    model = SentenceTransformer('all-MiniLM-L6-v2')
+    model = SentenceTransformer('sentence-transformers/paraphrase-MiniLM-L6-v2')
 
-    # Encode the query
-    query_embedding = model.encode(query, convert_to_tensor=True)
-
+    # Convert the query to a vector representation
+    query_embedding = model.encode(query)
     # Search for similar items in the specified collection
-    search_results = client.search(collection_name, query_embedding.cpu().numpy(), top_k=top_k)
+    search_results = client.search(
+        collection_name=collection_name,
+        query_vector=query_embedding.tolist(),
+        limit=top_k,
+        with_payload=True
+    )
 
-    return search_results
+    # Sort the search results by score in descending order
+    
+    
+    extracted_results = []
+    for result in search_results:
+        payload = result.payload
+        extracted_result = {
+            'title': payload.get('title', ''),
+            'release_year': payload.get('release_date', '')[:4]  # Extract the first 4 characters of the release_date
+        }
+        extracted_results.append(extracted_result)
+
+    return extracted_results
+
 
 # Example usage
 qdrant_url = os.getenv('QDRANT_URL')
@@ -72,7 +91,8 @@ collection_name = 'IMDB_movies'
 # ingest_csv_data(qdrant_url, api_key, collection_name)
 
 # Perform semantic search
-query = "a scifi old movie with aliens and spaceships"
+query = "Star Trek"
 results = semantic_search(query, qdrant_url, api_key, collection_name)
 for result in results:
     print(result)
+    
