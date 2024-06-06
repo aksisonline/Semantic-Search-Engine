@@ -3,7 +3,6 @@ import pandas as pd
 from tqdm import tqdm
 from sentence_transformers import SentenceTransformer
 from qdrant_client import QdrantClient, models
-from tqdm import tqdm
 
 COLLECTION_NAME = os.getenv('COLLECTION_NAME')
 COLLECTION_NAME_MULTI = os.getenv('COLLECTION_NAME_MULTI')
@@ -11,13 +10,12 @@ QDRANT_URL = os.getenv('QDRANT_URL')
 QDRANT_API_KEY = os.getenv('API_KEY')
 EMBEDDINGS_MODEL = os.getenv('EMBEDDINGS_MODEL')
 EMBEDDINGS_MODEL_MULTI = os.getenv('EMBEDDINGS_MODEL_MULTI')
-csv_file_path = f"IMDB.csv"
-
+CSV_FILE_PATH = "IMDB.csv"
 
 def get_data(csv_file_path):
     df = pd.read_csv(csv_file_path)
-    df = df.dropna(subset=['content'])
-    documents = df['content'].tolist()
+    df = df.dropna(subset=['overview'])
+    documents = df['overview'].tolist()
     metadata = df.to_dict('records')
     return documents, metadata
 
@@ -27,7 +25,7 @@ def upload_vectors(client: QdrantClient, encoder: SentenceTransformer, metadata)
         collection_name=COLLECTION_NAME_MULTI,
         records=[
             models.Record(
-                id=idx, vector=encoder.encode(doc['content']).tolist(), payload=doc
+                id=idx, vector=encoder.encode(doc['overview']).tolist(), payload=doc
             )
             for idx, doc in enumerate(tqdm(metadata))
         ],
@@ -96,7 +94,7 @@ def populate_qdrant():
         api_key=QDRANT_API_KEY,
     )
 
-    documents, metadata = get_data()
+    documents, metadata = get_data(CSV_FILE_PATH)
     init_multi_embed(client, metadata)
     # init_fastembed(client, documents, metadata)
 
