@@ -28,7 +28,7 @@ def preprocess_row(row):
 data['combined_text'] = data.apply(preprocess_row, axis=1)
 
 # Encode combined text fields into vectors
-data['vector'] = data['combined_text'].apply(lambda x: model.encode(x).tolist())
+data['vector'] = data['combined_text'].apply(lambda x: model.encode(x).tolist())    
 
 # Initialize Qdrant client
 qdrant_client = QdrantClient(url=qdrant_url, api_key=api_key)
