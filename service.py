@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import os
 from dotenv import load_dotenv
 
@@ -14,6 +15,13 @@ from neural_searcher import NeuralSearcher
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Change this to your frontend's URL in production
+    allow_credentials=True,
+    allow_methods=["GET", "POST"],
+    allow_headers=["*"],
+)
 # Create a neural searcher instance
 neural_searcher = NeuralSearcher(collection_name='IMDB_movies_200')
 

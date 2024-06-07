@@ -11,6 +11,7 @@ const App = () => {
     try {
       const response = await axios.get(`http://localhost:8000/api/search?q=${query}`);
       setResponse(response.data.result);
+      console.log(response.data.result);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -37,12 +38,18 @@ const App = () => {
         {loading ? (
           <p>Loading...</p>
         ) : response.length > 0 ? (
-          response.map((movie) => (
-            <div key={movie.id}>
-              <h2>{movie.title} ({movie.release_date})</h2>
-              <p>{movie.overview}</p>
-            </div>
-          ))
+          <ul>
+            {response.map((movie) => (
+              <li key={movie.id}>
+                <h2>{movie.title} ({movie.release_date})</h2>
+                <p>{movie.overview}</p>
+                <p>Genres: {movie.genres}</p>
+                <p>Director: {movie.director}</p>
+                <p>Cast: {movie.cast}</p>
+                <p>Rating: {movie.vote_average}</p>
+              </li>
+            ))}
+          </ul>
         ) : (
           <p>No movies found.</p>
         )}
@@ -50,5 +57,8 @@ const App = () => {
     </div>
   );
 };
+
+
+
 
 export default App;
