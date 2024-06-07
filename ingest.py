@@ -34,7 +34,7 @@ data['vector'] = data['combined_text'].apply(lambda x: model.encode(x).tolist())
 qdrant_client = QdrantClient(url=qdrant_url, api_key=api_key)
 
 # Define Qdrant collection name
-collection_name = "IMDB_movies_200"
+collection_name = "IMDB_movies_50per"
 
 # Create Qdrant collection if it doesn't exist
 qdrant_client.recreate_collection(

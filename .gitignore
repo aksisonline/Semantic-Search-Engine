@@ -2,3 +2,4 @@
 /env
 IMDB.csv
 __pycache__/neural_searcher.cpython-311.pyc
+test.py
