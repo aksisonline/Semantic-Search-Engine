@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
+
 const App = () => {
   const [query, setQuery] = useState('');
   const [response, setResponse] = useState([]);
@@ -25,28 +26,38 @@ const App = () => {
   };
 
   return (
-    <div>
-      <h1>Movie Search</h1>
-      <input
-        type="text"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search for movies..."
-      />
-      <button onClick={handleSearch}>Search</button>
+    <div className="container mx-auto">
+      <h1 className="text-4xl font-bold mb-4">Movie Search</h1>
+      <div className="flex items-center mb-4">
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search for movies..."
+          className="border border-gray-300 rounded py-2 px-4 mr-2"
+        />
+        <button
+          onClick={handleSearch}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Search
+        </button>
+      </div>
       <div>
         {loading ? (
           <p>Loading...</p>
         ) : response.length > 0 ? (
           <ul>
             {response.map((movie) => (
-              <li key={movie.id}>
-                <h2>{movie.title} ({movie.release_date})</h2>
-                <p>{movie.overview}</p>
-                <p>Genres: {movie.genres}</p>
-                <p>Director: {movie.director}</p>
-                <p>Cast: {movie.cast}</p>
-                <p>Rating: {movie.vote_average}</p>
+              <li key={movie.id} className="mb-4 rounded-xl bg-white shadow p-9">
+                <h2 className="text-2xl font-bold pb-5">
+                  {movie.title} ({movie.release_date})
+                </h2>
+                <p className='pb-3'>{movie.overview}</p>
+                <p><b>Genres:</b> {movie.genres}</p>
+                <p><b>Director:</b> {movie.director}</p>
+                <p><b>Cast:</b> {movie.cast}</p>
+                <p><b>Rating:</b> {movie.vote_average}</p>
               </li>
             ))}
           </ul>
