@@ -1,5 +1,5 @@
 .env
 /env
 IMDB.csv
-__pycache__/neural_searcher.cpython-311.pyc
+/__pycache__
 test.py
